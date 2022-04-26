@@ -73,7 +73,7 @@ const exportSpace = async (token, spaceId, exportType) => {
 const downloadExport = async (url, exportType) => {
     console.log(`[Notion] ${exportType} export downloading...`);
 
-    const path = `/home/node/data/${exportType}/`;
+    const path = `./data/${exportType}/`;
     const td = new Date().toISOString()
         .replace(/-/g, '')
         .replace(/T/, '_')
