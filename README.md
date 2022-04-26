@@ -39,8 +39,7 @@ Docker can be used to run the backup application too.
 #### Docker run
 ``docker run -e TOKEN=[YOUR_TOKEN_v2] mremy/automanotion``
 
-You can also specify the same options as above (with -e option) and add a volume for the export folder.
-
+See [environment variables](#Environment variables) section for options.
 ```
 docker run -d \
 --name=automanotion \
