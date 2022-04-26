@@ -1,0 +1,19 @@
+{
+  "name": "automanotion",
+  "version": "1.0.0",
+  "homepage": "https://github.com/mickremy/automanotion#readme",
+  "description": "Backup Notion data",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mickremy/automanotion.git"
+  },
+  "main": "app.mjs",
+  "scripts": {
+    "start": "node app.mjs"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^3.2.3"
+  }
+}
