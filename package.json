@@ -12,6 +12,7 @@
     "start": "node app.mjs"
   },
   "dependencies": {
+    "cronstrue": "^2.4.0",
     "dotenv": "^16.0.0",
     "node-cron": "^3.0.0",
     "node-fetch": "^3.2.3"

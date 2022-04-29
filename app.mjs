@@ -2,6 +2,7 @@ import * as fs from "fs";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
 import cron from "node-cron";
+import cronstrue from "cronstrue";
 
 dotenv.config();
 
@@ -147,7 +148,7 @@ const startExportTask = async () => {
         console.log(`[Notion] No cron expression defined executing export once.`);
         await startExportTask();
     } else {
-        console.log(`[Notion] Execution export with cron expression (${cronExpression})`);
+        console.log(`[Notion] Execution export with scheduling: ${cronstrue.toString(cronExpression).toLowerCase()} (cron expression: ${cronExpression})`);
 
         cron.schedule(cronExpression, () => {
             (async () => {
