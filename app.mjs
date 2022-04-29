@@ -1,8 +1,12 @@
 import * as fs from "fs";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
+import cron from "node-cron";
 
 dotenv.config();
+
+let locale = process.env.LOCALE || "en";
+let timeZone = process.env.TIMEZONE || "Etc/UTC";
 
 const getSpaces = async (token) => {
     const res = await fetch("https://www.notion.so/api/v3/getSpaces", {
@@ -24,9 +28,6 @@ const getSpaces = async (token) => {
 
 const exportSpace = async (token, spaceId, exportType) => {
     console.log(`[Notion] ${exportType} export starting...`);
-
-    let locale = process.env.LOCALE || "en";
-    let timeZone = process.env.TIMEZONE || "Etc/UTC";
 
     const exportTask = {
         task: {
@@ -96,8 +97,7 @@ const downloadExport = async (url, exportType) => {
     console.log(`[Notion] ${exportType} export download successful !`);
 };
 
-// cron.schedule("*/5 * * * *", () => {
-(async () => {
+const startExportTask = async () => {
     let token = process.env.TOKEN;
     if (!token) {
         console.error(`[Notion] token not defined`);
@@ -105,6 +105,7 @@ const downloadExport = async (url, exportType) => {
     }
 
     let exportType = process.env.EXPORT_TYPE || "html+markdown";
+
     const spaces = await getSpaces(token);
     await Promise.all(spaces.map(async (spaceId) => {
         switch (exportType) {
@@ -123,11 +124,11 @@ const downloadExport = async (url, exportType) => {
             }
 
             case "html+markdown": {
-                let mdUrl = await exportSpace(token, spaceId, "markdown");
-                await downloadExport(mdUrl, "markdown");
-
                 let htmlUrl = await exportSpace(token, spaceId, "html");
                 await downloadExport(htmlUrl, "html");
+
+                let mdUrl = await exportSpace(token, spaceId, "markdown");
+                await downloadExport(mdUrl, "markdown");
 
                 break;
             }
@@ -138,5 +139,20 @@ const downloadExport = async (url, exportType) => {
             }
         }
     }));
+}
+
+(async () => {
+    let cronExpression = process.env.CRON;
+    if (!cronExpression) {
+        console.log(`[Notion] No cron expression defined executing export once.`);
+        await startExportTask();
+    } else {
+        console.log(`[Notion] Execution export with cron expression (${cronExpression})`);
+
+        cron.schedule(cronExpression, () => {
+            (async () => {
+                await startExportTask();
+            })();
+        }, timeZone);
+    }
 })();
-// }, null);

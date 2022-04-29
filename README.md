@@ -66,15 +66,49 @@ services:
     environment:
       LOCALE: "en"
       TIMEZONE: "Europe/Paris"
+      # CRON: 0 */6 * * * (every 6 hours)
       # EXPORT_TYPE: html or markdown
       TOKEN: [YOUR_TOKEN_v2]
 ```
 
 ### Environment variables
+The only environment variable mandatory is the token
+* ``TOKEN`` : your notion tokenv2
+* ``CRON`` : task schedule with crontab syntax (default: no value => execute once)
 * ``TIMEZONE``: your timezone (default: Europe/Paris)
 * ``LOCALE``: your language code (default: en)
 * ``EXPORT_TYPE``: hmtl/markdown (if not specified both exports will be performed)
 
+### Cron Syntax 
+Cron syntax is something like that ``* * * * * *``
+
+This is a quick reference to cron syntax and also shows the options [supported by the application](https://nodecron.com/docs/#cron-syntax).
+```
+ ┌────────────── second (optional)
+ │ ┌──────────── minute
+ │ │ ┌────────── hour
+ │ │ │ ┌──────── day of month
+ │ │ │ │ ┌────── month
+ │ │ │ │ │ ┌──── day of week
+ │ │ │ │ │ │
+ │ │ │ │ │ │
+ * * * * * *
+ ```
+
+#### Allowed values 
+* ``second``: 0 - 59
+* ``minute``: 0 - 59
+* ``hour``: 0 - 23
+* ``day of month``: 1 - 31
+* ``month`` : 1-12 (or names, e.g: Jan, Feb, March, ...)
+* ``day of week``: 0 - 7 
+
+#### Example
+* Every 6 hours: ``0 */6 * * *``
+* Every day at 00:00 ``0 0 * * *``
+* Every sunday at 00:00: ``0 0 * * 0``
+
+[Find other examples here](https://crontab.guru/examples.html)
 
 ## Acknowledgements
 * [ivanik7](https://github.com/ivanik7) project [notion-backup](https://github.com/ivanik7/notion-backup) which inspired this work
