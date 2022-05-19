@@ -106,8 +106,9 @@ dist
 # Docker
 docker-compose.yml
 
-# WebStorm
+# IDE
 .idea/
+.vscode/
 
 # Test folder
 .data/

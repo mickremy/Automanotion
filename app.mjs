@@ -9,7 +9,7 @@ dotenv.config();
 let locale = process.env.LOCALE || "en";
 let timeZone = process.env.TIMEZONE || "Etc/UTC";
 
-const getSpaces = async (token) => {
+async function getSpaces(token) {
     const res = await fetch("https://www.notion.so/api/v3/getSpaces", {
         method: "POST", body: JSON.stringify({}), headers: {
             "Cookie": `token_v2=${token};`, "Content-Type": "application/json",
@@ -25,9 +25,9 @@ const getSpaces = async (token) => {
         }
     }
     return spacesIds;
-};
+}
 
-const exportSpace = async (token, spaceId, exportType) => {
+async function exportSpace(token, spaceId, exportType) {
     console.log(`[Notion] ${exportType} export starting...`);
 
     const exportTask = {
@@ -62,7 +62,7 @@ const exportSpace = async (token, spaceId, exportType) => {
             const taskStatus = json.results[0].status;
             if (!taskStatus) {
                 clearInterval(interval);
-                reject(new Error(json));
+                reject(new Error());
             } else if (taskStatus.type === "complete") {
                 clearInterval(interval);
                 console.log(`[Notion] ${exportType} export successful ! (Pages exported: ${taskStatus.pagesExported})`);
@@ -70,9 +70,9 @@ const exportSpace = async (token, spaceId, exportType) => {
             }
         }, 1000);
     });
-};
+}
 
-const downloadExport = async (url, exportType) => {
+async function downloadExport(exportType, url) {
     console.log(`[Notion] ${exportType} export downloading...`);
 
     const path = `./data/${exportType}/`;
@@ -80,8 +80,8 @@ const downloadExport = async (url, exportType) => {
         .replace(/-/g, '')
         .replace(/T/, '_')
         .replace(/:/g, '')
-        .replace(/\..+/, '')
-    const fileName = `Export_${td}${url.match(/[\da-f-]+.zip/)[0]}`
+        .replace(/\..+/, '');
+    const fileName = `Export_${td}${url.match(/[\da-f-]+.zip/)[0]}`;
 
     if (!fs.existsSync(path)) {
         fs.mkdirSync(path, { recursive: true });
@@ -96,9 +96,9 @@ const downloadExport = async (url, exportType) => {
     });
 
     console.log(`[Notion] ${exportType} export download successful !`);
-};
+}
 
-const startExportTask = async () => {
+async function startExportTask() {
     let token = process.env.TOKEN;
     if (!token) {
         console.error(`[Notion] token not defined`);
@@ -113,14 +113,12 @@ const startExportTask = async () => {
             case "html": {
                 let htmlUrl = await exportSpace(token, spaceId, "html");
                 await downloadExport(htmlUrl, "html");
-
                 break;
             }
 
             case "markdown": {
                 let mdUrl = await exportSpace(token, spaceId, "markdown");
                 await downloadExport(mdUrl, "markdown");
-
                 break;
             }
 
